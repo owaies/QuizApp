@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quiz App</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .hidden { display: none; }
+    .tab-active { background-color: #e5e7eb; }
+    .selected-option { background-color: #bfdbfe; border-color: #2563eb; }
+  </style>
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center p-4">
+  <div class="w-full max-w-4xl bg-white rounded-lg shadow-lg p-6">
+    <!-- Authentication Section -->
+    <div id="auth" class="hidden">
+      <!-- Login Form -->
+      <form id="loginForm" class="space-y-4">
+        <h2 class="text-2xl font-bold text-center">Login</h2>
+        <div>
+          <label for="loginUsername" class="block text-sm font-medium">Username</label>
+          <input id="loginUsername" type="text" class="w-full p-2 border rounded" required>
+        </div>
+        <div>
+          <label for="loginPassword" class="block text-sm font-medium">Password</label>
+          <input id="loginPassword" type="password" class="w-full p-2 border rounded" required>
+        </div>
+        <button id="loginBtn" type="submit" class="w-full px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">Login</button>
+        <p class="text-center text-sm">Don't have an account? <a id="showSignupLink" href="#" class="text-blue-500 hover:underline">Sign Up</a></p>
+      </form>
+      <!-- Signup Form -->
+      <form id="signupForm" class="space-y-4 hidden">
+        <h2 class="text-2xl font-bold text-center">Sign Up</h2>
+        <div>
+          <label for="signupUsername" class="block text-sm font-medium">Username</label>
+          <input id="signupUsername" type="text" class="w-full p-2 border rounded" required>
+        </div>
+        <div>
+          <label for="signupEmail" class="block text-sm font-medium">Email</label>
+          <input id="signupEmail" type="email" class="w-full p-2 border rounded" required>
+        </div>
+        <div>
+          <label for="signupPassword" class="block text-sm font-medium">Password</label>
+          <input id="signupPassword" type="password" class="w-full p-2 border rounded" required>
+        </div>
+        <button id="signupBtn" type="submit" class="w-full px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">Sign Up</button>
+        <p class="text-center text-sm">Already have an account? <a id="showLoginLink" href="#" class="text-blue-500 hover:underline">Login</a></p>
+      </form>
+    </div>
+
+    <!-- Quiz Section -->
+    <div id="quiz" class="hidden">
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="text-2xl font-bold">Quiz</h2>
+        <div>
+          <span class="text-sm mr-2">Logged in as: <span id="usernameDisplay"></span></span>
+          <button id="adminAccessBtn" class="px-4 py-2 bg-purple-500 text-white rounded hover:bg-purple-600 hidden">Admin Access</button>
+          <button onclick="logout()" class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600">Logout</button>
+        </div>
+      </div>
+      <div id="questionContainer" class="space-y-4"></div>
+      <button id="submitQuizBtn" class="mt-4 px-6 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">Submit Quiz</button>
+    </div>
+
+    <!-- Result Section -->
+    <div id="result" class="hidden"></div>
+
+    <!-- Admin Panel -->
+    <div id="adminPanel" class="hidden">
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="text-2xl font-bold">Admin Panel</h2>
+        <button onclick="logout()" class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600">Logout</button>
+      </div>
+      <div class="flex border-b mb-4">
+        <button id="tabQuestions" onclick="switchTab('questions')" class="px-4 py-2 tab-active">Questions</button>
+        <button id="tabUsers" onclick="switchTab('users')" class="px-4 py-2">Users</button>
+        <button id="tabSettings" onclick="switchTab('settings')" class="px-4 py-2">Settings</button>
+      </div>
+      <div id="questionsTab" class="active">
+        <form class="mb-6 p-6 border rounded bg-white shadow-sm">
+          <h3 class="text-lg font-semibold mb-4">Add New Question</h3>
+          <div class="mb-4">
+            <label for="newQuestion" class="block text-sm font-medium">Question</label>
+            <input id="newQuestion" type="text" class="w-full p-2 border rounded" required>
+          </div>
+          <div id="optionFields" class="mb-4"></div>
+          <button id="addOptionBtn" type="button" class="mb-4 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600">Add Option</button>
+          <div class="mb-4">
+            <label for="newAnswer" class="block text-sm font-medium">Correct Answer</label>
+            <input id="newAnswer" type="text" class="w-full p-2 border rounded" required>
+          </div>
+          <button id="addQuestionBtn" type="submit" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">Add Question</button>
+        </form>
+        <div id="adminQuestionList"></div>
+      </div>
+      <div id="usersTab" class="hidden">
+        <div class="flex justify-between items-center mb-4">
+          <h3 class="text-lg font-semibold">Users</h3>
+          <button id="refreshUsersBtn" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">Refresh</button>
+        </div>
+        <div id="usersList"></div>
+      </div>
+      <div id="settingsTab" class="hidden"></div>
+    </div>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>
