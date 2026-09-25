@@ -8,6 +8,12 @@ require('dotenv').config();
 
 const app = express();
 
+const JWT_SECRET = process.env.JWT_SECRET;
+if (!JWT_SECRET) {
+  console.error('JWT_SECRET environment variable is required');
+  process.exit(1);
+}
+
 // Middleware
 app.use(cors());
 app.use(bodyParser.json());
@@ -39,7 +45,7 @@ const authenticate = (req, res, next) => {
   }
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'your_secret_key');
+    const decoded = jwt.verify(token, JWT_SECRET);
     req.user = decoded;
     next();
   } catch (error) {
@@ -89,7 +95,7 @@ app.post('/api/signup', async (req, res) => {
 
     const token = jwt.sign(
       { userId: user._id, role: user.role, username: user.username },
-      process.env.JWT_SECRET || 'your_secret_key',
+      JWT_SECRET,
       { expiresIn: '1h' }
     );
 
@@ -122,7 +128,7 @@ app.post('/api/login', async (req, res) => {
 
     const token = jwt.sign(
       { userId: user._id, role: user.role, username: user.username },
-      process.env.JWT_SECRET || 'your_secret_key',
+      JWT_SECRET,
       { expiresIn: '1h' }
     );
 
@@ -263,7 +269,7 @@ app.get('/api/leaderboard', async (req, res) => {
     const token = req.headers.authorization?.split(' ')[1];
     if (token) {
       try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET || 'your_secret_key');
+        const decoded = jwt.verify(token, JWT_SECRET);
         const allResults = await Result.find().sort({ percentage: -1, submittedAt: 1 });
         userRank = allResults.findIndex(r => r.userId.toString() === decoded.userId.toString()) + 1;
 
