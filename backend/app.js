@@ -7,6 +7,7 @@ const bodyParser = require('body-parser');
 require('dotenv').config();
 
 const app = express();
+const corsOrigins = (process.env.CORS_ORIGINS || '').split(',').map((origin) => origin.trim()).filter(Boolean);
 
 const JWT_SECRET = process.env.JWT_SECRET;
 if (!JWT_SECRET) {
@@ -15,7 +16,7 @@ if (!JWT_SECRET) {
 }
 
 // Middleware
-app.use(cors());
+app.use(cors({ origin: corsOrigins.length ? corsOrigins : false }));
 app.use(bodyParser.json());
 
 // Connect to MongoDB
