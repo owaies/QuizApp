@@ -171,8 +171,8 @@ app.post('/api/submit', authenticate, async (req, res) => {
   try {
     const { answers } = req.body;
 
-    if (!Array.isArray(answers) || answers.length === 0) {
-      return res.status(400).json({ error: 'Invalid or empty answers array' });
+    if (!Array.isArray(answers) || answers.length === 0 || answers.length > 200) {
+      return res.status(400).json({ error: 'Answers must contain between 1 and 200 items' });
     }
 
     let score = 0;
