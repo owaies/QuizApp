@@ -38,7 +38,9 @@ const Setting = require('./models/Setting');
 
 // Authentication Middleware
 const authenticate = (req, res, next) => {
-  const token = req.headers.authorization?.split(' ')[1];
+  const authHeader = req.headers.authorization;
+  const authParts = authHeader ? authHeader.trim().split(/\s+/) : [];
+  const token = authParts.length === 2 && authParts[0].toLowerCase() === 'bearer' ? authParts[1] : null;
   if (!token) {
     console.log('Authenticate: No token provided');
     return res.status(401).json({ error: 'Unauthorized' });
