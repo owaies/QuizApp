@@ -76,8 +76,14 @@ app.post('/api/signup', async (req, res) => {
     if (!username || !email || !password) {
       return res.status(400).json({ error: 'All fields are required' });
     }
-    if (password.length < 6) {
-      return res.status(400).json({ error: 'Password must be at least 6 characters' });
+    if (typeof username !== 'string' || username.trim().length < 3 || username.trim().length > 50) {
+      return res.status(400).json({ error: 'Username must be between 3 and 50 characters' });
+    }
+    if (typeof email !== 'string' || email.trim().length > 254 || !email.includes('@')) {
+      return res.status(400).json({ error: 'Email must be valid and no longer than 254 characters' });
+    }
+    if (typeof password !== 'string' || password.length < 6 || password.length > 72) {
+      return res.status(400).json({ error: 'Password must be between 6 and 72 characters' });
     }
 
     const existingUser = await User.findOne({ $or: [{ email }, { username }] });
