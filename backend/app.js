@@ -17,7 +17,7 @@ if (!JWT_SECRET) {
 
 // Middleware
 app.use(cors({ origin: corsOrigins.length ? corsOrigins : false }));
-app.use(bodyParser.json());
+app.use(bodyParser.json({ limit: '1mb' }));
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/quizapp', {
