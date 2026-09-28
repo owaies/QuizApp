@@ -275,7 +275,9 @@ app.get('/api/leaderboard', async (req, res) => {
     let userRank = null;
     let userScore = null;
 
-    const token = req.headers.authorization?.split(' ')[1];
+    const authHeader = req.headers.authorization;
+    const authParts = authHeader ? authHeader.trim().split(/\s+/) : [];
+    const token = authParts.length === 2 && authParts[0].toLowerCase() === 'bearer' ? authParts[1] : null;
     if (token) {
       try {
         const decoded = jwt.verify(token, JWT_SECRET);
