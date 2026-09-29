@@ -1,3 +1,5 @@
+const API_BASE = window.QUIZ_API_BASE || API_BASE + '';
+
 let token = null;
 let questions = [];
 let selectedAnswers = {};
@@ -231,7 +233,7 @@ async function login(usernameParam, passwordParam) {
 
   try {
     console.log(`Login attempt for username: ${username}`);
-    const response = await fetch('http://localhost:5000/api/login', {
+    const response = await fetch(API_BASE + '/api/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username, password })
@@ -283,7 +285,7 @@ async function signup() {
 
   try {
     console.log(`Signup attempt for username: ${username}, email: ${email}`);
-    const response = await fetch('http://localhost:5000/api/signup', {
+    const response = await fetch(API_BASE + '/api/signup', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username, email, password })
@@ -322,7 +324,7 @@ async function loadQuestions() {
     questionContainer.innerHTML = '<div class="text-center py-8">Loading questions...</div>';
 
     console.log('Fetching question limit...');
-    const settingsResponse = await fetch('http://localhost:5000/api/settings/questionLimit', {
+    const settingsResponse = await fetch(API_BASE + '/api/settings/questionLimit', {
       headers: { 
         'Authorization': `Bearer ${token}`,
         'Cache-Control': 'no-cache'
@@ -339,7 +341,7 @@ async function loadQuestions() {
     console.log(`Question limit loaded: ${settings.questionLimit}`);
 
     console.log('Fetching questions...');
-    const response = await fetch('http://localhost:5000/api/questions', {
+    const response = await fetch(API_BASE + '/api/questions', {
       headers: { 
         'Authorization': `Bearer ${token}`,
         'Cache-Control': 'no-cache'
@@ -440,7 +442,7 @@ async function submitQuiz() {
     submitBtn.textContent = 'Submitting...';
 
     console.log('Submitting quiz with answers:', answers);
-    const response = await fetch('http://localhost:5000/api/submit', {
+    const response = await fetch(API_BASE + '/api/submit', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -483,7 +485,7 @@ async function loadSettings() {
     console.log('Loading settings...');
     settingsTab.innerHTML = '<div class="text-center py-8">Loading settings...</div>';
 
-    const response = await fetch('http://localhost:5000/api/settings/questionLimit', {
+    const response = await fetch(API_BASE + '/api/settings/questionLimit', {
       headers: { 
         'Authorization': `Bearer ${token}`,
         'Cache-Control': 'no-cache'
@@ -566,7 +568,7 @@ async function saveQuestionLimit() {
     feedback.innerHTML = '';
 
     console.log(`Saving question limit: ${limit}`);
-    const response = await fetch('http://localhost:5000/api/settings/questionLimit', {
+    const response = await fetch(API_BASE + '/api/settings/questionLimit', {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -625,7 +627,7 @@ async function loadAdminQuestions(forceRefresh = false) {
 
     adminList.innerHTML = '<div class="text-center py-8">Loading questions...</div>';
 
-    const url = forceRefresh ? `http://localhost:5000/api/questions?timestamp=${Date.now()}` : 'http://localhost:5000/api/questions';
+    const url = forceRefresh ? `${API_BASE}/api/questions?timestamp=${Date.now()}` : API_BASE + '/api/questions';
 
     console.log('Fetching admin questions...');
     const response = await fetch(url, {
@@ -708,7 +710,7 @@ async function loadUsers() {
     console.log('Loading users...');
     usersList.innerHTML = '<div class="text-center py-8">Loading users...</div>';
 
-    const response = await fetch('http://localhost:5000/api/users', {
+    const response = await fetch(API_BASE + '/api/users', {
       headers: { 
         'Authorization': `Bearer ${token}`,
         'Cache-Control': 'no-cache'
@@ -791,7 +793,7 @@ async function deleteUser(userId) {
 
   try {
     console.log(`Deleting user with ID: ${userId}`);
-    const response = await fetch(`http://localhost:5000/api/users/${userId}`, {
+    const response = await fetch(`${API_BASE}/api/users/${userId}`, {
       method: 'DELETE',
       headers: { 
         'Authorization': `Bearer ${token}`,
@@ -841,7 +843,7 @@ async function addQuestion() {
     addBtn.textContent = 'Adding...';
 
     console.log('Adding question:', { question, options, answer });
-    const response = await fetch('http://localhost:5000/api/questions', {
+    const response = await fetch(API_BASE + '/api/questions', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -885,7 +887,7 @@ async function deleteQuestion(id) {
 
   try {
     console.log(`Deleting question with ID: ${id}`);
-    const response = await fetch(`http://localhost:5000/api/questions/${id}`, {
+    const response = await fetch(`${API_BASE}/api/questions/${id}`, {
       method: 'DELETE',
       headers: { 
         'Authorization': `Bearer ${token}`,
