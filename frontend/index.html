@@ -59,12 +59,12 @@
           <button onclick="logout()" class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600">Logout</button>
         </div>
       </div>
-      <div id="questionContainer" class="space-y-4"></div>
+      <div id="questionContainer" class="space-y-4" aria-live="polite" aria-busy="false"></div>
       <button id="submitQuizBtn" class="mt-4 px-6 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">Submit Quiz</button>
     </div>
 
     <!-- Result Section -->
-    <div id="result" class="hidden"></div>
+    <div id="result" class="hidden" aria-live="polite"></div>
 
     <!-- Admin Panel -->
     <div id="adminPanel" class="hidden">
@@ -99,9 +99,9 @@
           <h3 class="text-lg font-semibold">Users</h3>
           <button id="refreshUsersBtn" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">Refresh</button>
         </div>
-        <div id="usersList"></div>
+        <div id="usersList" aria-live="polite"></div>
       </div>
-      <div id="settingsTab" class="hidden"></div>
+      <div id="settingsTab" class="hidden" aria-live="polite"></div>
     </div>
   </div>
   <script src="script.js"></script>
