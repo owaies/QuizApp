@@ -348,18 +348,25 @@ app.post('/api/questions', authenticate, adminCheck, async (req, res) => {
   try {
     const { question, options, answer } = req.body;
 
-    if (!question || !Array.isArray(options) || options.length < 2 || !answer) {
-      return res.status(400).json({ error: 'Question, at least 2 options, and answer are required' });
+    if (typeof question !== 'string' || question.trim().length < 3 || question.trim().length > 500 || !Array.isArray(options) || options.length < 2 || options.length > 10 || typeof answer !== 'string') {
+      return res.status(400).json({ error: 'Question must be 3-500 characters with 2-10 options' });
     }
 
-    if (!options.includes(answer)) {
+    const normalizedOptions = options.map(option => typeof option === 'string' ? option.trim() : '');
+    const uniqueOptions = new Set(normalizedOptions.map(option => option.toLowerCase()));
+    if (normalizedOptions.some(option => !option || option.length > 200) || uniqueOptions.size !== normalizedOptions.length) {
+      return res.status(400).json({ error: 'Options must be non-empty, unique, and no longer than 200 characters' });
+    }
+
+    const normalizedAnswer = answer.trim();
+    if (!normalizedOptions.includes(normalizedAnswer)) {
       return res.status(400).json({ error: 'Correct answer must be one of the options' });
     }
 
     const newQuestion = new Question({
       question,
-      options,
-      answer
+      options: normalizedOptions,
+      answer: normalizedAnswer
     });
 
     await newQuestion.save();
