@@ -395,6 +395,15 @@ app.use((req, res, next) => {
   next();
 });
 
+app.get('/health', async (req, res) => {
+  const databaseReady = mongoose.connection.readyState === 1;
+  res.status(databaseReady ? 200 : 503).json({
+    status: databaseReady ? 'ok' : 'unavailable',
+    service: 'quiz-api',
+    database: databaseReady ? 'connected' : 'disconnected'
+  });
+});
+
 // Start server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
