@@ -19,11 +19,17 @@ if (!JWT_SECRET) {
 app.use(cors({ origin: corsOrigins.length ? corsOrigins : false }));
 app.use(bodyParser.json({ limit: '1mb' }));
 
+// Disable caching for every response, including route handlers.
+app.use((req, res, next) => {
+  res.set('Cache-Control', 'no-store, no-cache, must-revalidate, private');
+  next();
+});
+
 // Connect to MongoDB
 mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/quizapp', {
   useNewUrlParser: true,
   useUnifiedTopology: true,
-  serverSelectionTimeoutMS: 5000 // Timeout for server selection
+  serverSelectionTimeoutMS: 5000
 })
 .then(() => console.log('Connected to MongoDB'))
 .catch(err => {
@@ -394,12 +400,6 @@ app.delete('/api/questions/:id', authenticate, adminCheck, async (req, res) => {
     console.error('Delete question error:', error);
     res.status(500).json({ error: 'Server error: ' + error.message });
   }
-});
-
-// Disable caching
-app.use((req, res, next) => {
-  res.set('Cache-Control', 'no-store, no-cache, must-revalidate, private');
-  next();
 });
 
 app.get('/health', async (req, res) => {
