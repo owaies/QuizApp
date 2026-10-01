@@ -18,8 +18,6 @@ if (!JWT_SECRET) {
 // Middleware
 app.use(cors({ origin: corsOrigins.length ? corsOrigins : false }));
 app.use(bodyParser.json({ limit: '1mb' }));
-
-// Disable caching for every response, including route handlers.
 app.use((req, res, next) => {
   res.set('Cache-Control', 'no-store, no-cache, must-revalidate, private');
   next();
@@ -118,7 +116,7 @@ app.post('/api/signup', async (req, res) => {
 
   } catch (error) {
     console.error('Signup error:', error);
-    res.status(500).json({ error: 'Server error: ' + error.message });
+    res.status(500).json({ error: 'Unable to create account' });
   }
 });
 
@@ -151,7 +149,7 @@ app.post('/api/login', async (req, res) => {
 
   } catch (error) {
     console.error('Login error:', error);
-    res.status(500).json({ error: 'Server error: ' + error.message });
+    res.status(500).json({ error: 'Unable to sign in' });
   }
 });
 
@@ -175,7 +173,7 @@ app.get('/api/questions', authenticate, async (req, res) => {
     res.json(questions);
   } catch (error) {
     console.error('Get questions error:', error);
-    res.status(500).json({ error: 'Server error: ' + error.message });
+    res.status(500).json({ error: 'Unable to load questions' });
   }
 });
 
@@ -234,7 +232,7 @@ app.post('/api/submit', authenticate, async (req, res) => {
 
   } catch (error) {
     console.error('Submit quiz error:', error);
-    res.status(500).json({ error: 'Server error: ' + error.message });
+    res.status(500).json({ error: 'Unable to submit quiz' });
   }
 });
 
@@ -246,7 +244,7 @@ app.get('/api/users', authenticate, adminCheck, async (req, res) => {
     res.json(users);
   } catch (error) {
     console.error('Get users error:', error);
-    res.status(500).json({ error: 'Server error: ' + error.message });
+    res.status(500).json({ error: 'Unable to load users' });
   }
 });
 
@@ -267,7 +265,7 @@ app.delete('/api/users/:id', authenticate, adminCheck, async (req, res) => {
     res.json(users);
   } catch (error) {
     console.error('Delete user error:', error);
-    res.status(500).json({ error: 'Server error: ' + error.message });
+    res.status(500).json({ error: 'Unable to delete user' });
   }
 });
 
@@ -309,7 +307,7 @@ app.get('/api/leaderboard', async (req, res) => {
 
   } catch (error) {
     console.error('Get leaderboard error:', error);
-    res.status(500).json({ error: 'Server error: ' + error.message });
+    res.status(500).json({ error: 'Unable to load leaderboard' });
   }
 });
 
@@ -321,7 +319,7 @@ app.get('/api/settings/questionLimit', authenticate, async (req, res) => {
     res.json({ value: setting?.value || '0' });
   } catch (error) {
     console.error('Get questionLimit error:', error);
-    res.status(500).json({ error: 'Server error: ' + error.message });
+    res.status(500).json({ error: 'Unable to load question limit' });
   }
 });
 
@@ -345,7 +343,7 @@ app.put('/api/settings/questionLimit', authenticate, adminCheck, async (req, res
     res.json({ value: setting.value });
   } catch (error) {
     console.error('Update questionLimit error:', error);
-    res.status(500).json({ error: 'Server error: ' + error.message });
+    res.status(500).json({ error: 'Unable to update question limit' });
   }
 });
 
@@ -381,7 +379,7 @@ app.post('/api/questions', authenticate, adminCheck, async (req, res) => {
 
   } catch (error) {
     console.error('Add question error:', error);
-    res.status(500).json({ error: 'Server error: ' + error.message });
+    res.status(500).json({ error: 'Unable to add question' });
   }
 });
 
@@ -398,7 +396,7 @@ app.delete('/api/questions/:id', authenticate, adminCheck, async (req, res) => {
     res.json(questions);
   } catch (error) {
     console.error('Delete question error:', error);
-    res.status(500).json({ error: 'Server error: ' + error.message });
+    res.status(500).json({ error: 'Unable to delete question' });
   }
 });
 
