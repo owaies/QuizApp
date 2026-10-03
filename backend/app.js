@@ -189,13 +189,16 @@ app.post('/api/submit', authenticate, async (req, res) => {
       return res.status(400).json({ error: 'Answers must contain between 1 and 200 items' });
     }
 
+    const answerIds = [...new Set(answers.map((answer) => answer.id).filter(Boolean))];
+    const questions = await Question.find({ _id: { $in: answerIds } }).select('answer');
+    const correctAnswers = new Map(questions.map((question) => [question._id.toString(), question.answer]));
+
     let score = 0;
     for (const answer of answers) {
       if (!answer.id || !answer.answer) {
         continue;
       }
-      const question = await Question.findById(answer.id);
-      if (question && question.answer === answer.answer) {
+      if (correctAnswers.get(answer.id.toString()) === answer.answer) {
         score++;
       }
     }
