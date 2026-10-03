@@ -76,21 +76,23 @@ const adminCheck = (req, res, next) => {
 app.post('/api/signup', async (req, res) => {
   try {
     const { username, email, password } = req.body;
+    const normalizedUsername = typeof username === 'string' ? username.trim() : username;
+    const normalizedEmail = typeof email === 'string' ? email.trim().toLowerCase() : email;
 
-    if (!username || !email || !password) {
+    if (!normalizedUsername || !normalizedEmail || !password) {
       return res.status(400).json({ error: 'All fields are required' });
     }
-    if (typeof username !== 'string' || username.trim().length < 3 || username.trim().length > 50) {
+    if (typeof normalizedUsername !== 'string' || normalizedUsername.length < 3 || normalizedUsername.length > 50) {
       return res.status(400).json({ error: 'Username must be between 3 and 50 characters' });
     }
-    if (typeof email !== 'string' || email.trim().length > 254 || !email.includes('@')) {
+    if (typeof normalizedEmail !== 'string' || normalizedEmail.length > 254 || !normalizedEmail.includes('@')) {
       return res.status(400).json({ error: 'Email must be valid and no longer than 254 characters' });
     }
     if (typeof password !== 'string' || password.length < 6 || password.length > 72) {
       return res.status(400).json({ error: 'Password must be between 6 and 72 characters' });
     }
 
-    const existingUser = await User.findOne({ $or: [{ email }, { username }] });
+    const existingUser = await User.findOne({ $or: [{ email: normalizedEmail }, { username: normalizedUsername }] });
     if (existingUser) {
       return res.status(400).json({ error: 'Email or username already exists' });
     }
@@ -98,8 +100,8 @@ app.post('/api/signup', async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const user = new User({
-      username,
-      email,
+      username: normalizedUsername,
+      email: normalizedEmail,
       password: hashedPassword,
       role: 'user'
     });
@@ -124,12 +126,13 @@ app.post('/api/signup', async (req, res) => {
 app.post('/api/login', async (req, res) => {
   try {
     const { username, password } = req.body;
+    const normalizedUsername = typeof username === 'string' ? username.trim() : username;
 
-    if (!username || !password) {
+    if (!normalizedUsername || !password) {
       return res.status(400).json({ error: 'Username and password are required' });
     }
 
-    const user = await User.findOne({ username });
+    const user = await User.findOne({ username: normalizedUsername });
     if (!user) {
       return res.status(401).json({ error: 'Invalid credentials' });
     }
