@@ -19,5 +19,5 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": ""
+  "description": "Express/MongoDB API for QuizApp authentication, quizzes, and submissions."
 }
