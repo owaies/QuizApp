@@ -173,6 +173,15 @@ app.get('/api/questions', authenticate, async (req, res) => {
         .slice(0, questionLimit);
     }
 
+    // Correct answers must only be included in administrator responses.
+    if (req.user.role !== 'admin') {
+      questions = questions.map((question) => {
+        const publicQuestion = question.toObject();
+        delete publicQuestion.answer;
+        return publicQuestion;
+      });
+    }
+
     res.json(questions);
   } catch (error) {
     console.error('Get questions error:', error);
