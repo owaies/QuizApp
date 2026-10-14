@@ -198,8 +198,25 @@ app.post('/api/submit', authenticate, async (req, res) => {
       return res.status(400).json({ error: 'Answers must contain between 1 and 200 items' });
     }
 
-    const answerIds = [...new Set(answers.map((answer) => answer.id).filter(Boolean))];
+    if (answers.some((answer) =>
+      !answer ||
+      typeof answer !== 'object' ||
+      typeof answer.id !== 'string' ||
+      !mongoose.Types.ObjectId.isValid(answer.id) ||
+      typeof answer.answer !== 'string'
+    )) {
+      return res.status(400).json({ error: 'Each answer must include a valid question ID and a text answer' });
+    }
+
+    const answerIds = answers.map((answer) => answer.id);
+    if (new Set(answerIds).size !== answerIds.length) {
+      return res.status(400).json({ error: 'Duplicate question answers are not allowed' });
+    }
+
     const questions = await Question.find({ _id: { $in: answerIds } }).select('answer');
+    if (questions.length !== answerIds.length) {
+      return res.status(400).json({ error: 'One or more question IDs are invalid' });
+    }
     const correctAnswers = new Map(questions.map((question) => [question._id.toString(), question.answer]));
 
     let score = 0;
