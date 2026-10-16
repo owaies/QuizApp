@@ -33,6 +33,10 @@ QuizApp is a full-stack quiz application with a Node.js/Express backend, MongoDB
 
 The backend package currently uses Express, Mongoose, dotenv, authentication middleware, and session support. MongoDB must be reachable through the connection settings supplied in the environment.
 
+The browser client uses the same origin for API requests by default. When hosting the frontend separately from the API, set `window.QUIZ_API_BASE` to the API origin before loading `frontend/script.js`. Keep this value as a public URL only; never place credentials or server secrets in browser configuration.
+
+Run the API-base configuration regression checks from the repository root with `node --test frontend/api-base.test.cjs`.
+
 ## Development notes
 
 - Keep credentials and connection strings out of Git. Use `.env.example` for variable names and safe placeholders.
