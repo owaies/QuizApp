@@ -1,4 +1,4 @@
-const API_BASE = window.QUIZ_API_BASE || API_BASE + '';
+const API_BASE = window.QUIZ_API_BASE || '';
 
 let token = null;
 let questions = [];
