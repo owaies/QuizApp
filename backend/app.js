@@ -85,7 +85,11 @@ app.post('/api/signup', async (req, res) => {
     if (typeof normalizedUsername !== 'string' || normalizedUsername.length < 3 || normalizedUsername.length > 50) {
       return res.status(400).json({ error: 'Username must be between 3 and 50 characters' });
     }
-    if (typeof normalizedEmail !== 'string' || normalizedEmail.length > 254 || !normalizedEmail.includes('@')) {
+    if (
+      typeof normalizedEmail !== 'string' ||
+      normalizedEmail.length > 254 ||
+      !/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(normalizedEmail)
+    ) {
       return res.status(400).json({ error: 'Email must be valid and no longer than 254 characters' });
     }
     if (typeof password !== 'string' || password.length < 6 || password.length > 72) {
