@@ -16,6 +16,8 @@ The frontend API-origin check does not replace backend or browser testing. Insta
 
 - [ ] Valid credentials create a session/token and reach the expected authenticated page.
 - [ ] Incorrect credentials are rejected without revealing whether an account exists.
+- [ ] Signup rejects malformed email shapes such as `user@`, `@example.com`, embedded whitespace, and addresses without a dotted domain.
+- [ ] Signup accepts a conventional address such as `user@example.com` and trims surrounding whitespace before validation.
 - [ ] Missing, malformed, and expired credentials are rejected by protected endpoints.
 - [ ] Logging out invalidates the client session and protected views no longer render as authenticated.
 - [ ] User A cannot read or change User B's profile, quizzes, or submissions by changing an identifier.
