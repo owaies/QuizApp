@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const cors = require('cors');
+const { isValidEmail } = require('./validation');
 const bodyParser = require('body-parser');
 require('dotenv').config();
 
@@ -87,8 +88,7 @@ app.post('/api/signup', async (req, res) => {
     }
     if (
       typeof normalizedEmail !== 'string' ||
-      normalizedEmail.length > 254 ||
-      !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizedEmail)
+      !isValidEmail(normalizedEmail)
     ) {
       return res.status(400).json({ error: 'Email must be valid and no longer than 254 characters' });
     }
