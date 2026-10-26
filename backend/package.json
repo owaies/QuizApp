@@ -4,7 +4,8 @@
   "main": "app.js",
   "scripts": {
     "start": "node app.js",
-    "test:frontend-config": "node --test ../frontend/api-base.test.cjs"
+    "test:frontend-config": "node --test ../frontend/api-base.test.cjs",
+    "test:validation": "node --test tests/signup-validation.test.cjs"
   },
   "dependencies": {
     "bcrypt": "^6.0.0",
