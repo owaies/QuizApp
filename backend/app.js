@@ -88,7 +88,7 @@ app.post('/api/signup', async (req, res) => {
     if (
       typeof normalizedEmail !== 'string' ||
       normalizedEmail.length > 254 ||
-      !/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(normalizedEmail)
+      !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizedEmail)
     ) {
       return res.status(400).json({ error: 'Email must be valid and no longer than 254 characters' });
     }
