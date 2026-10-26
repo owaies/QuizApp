@@ -1,0 +1,26 @@
+name: Signup Validation Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Test signup email validation
+        working-directory: backend
+        run: npm run test:validation
+      - name: Test frontend API origin configuration
+        working-directory: backend
+        run: npm run test:frontend-config
