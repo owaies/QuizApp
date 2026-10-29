@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const cors = require('cors');
-const { isValidEmail } = require('./validation');
+const { isValidEmail, normalizeLoginCredentials, isValidRegistrationPassword } = require('./validation');
 const bodyParser = require('body-parser');
 require('dotenv').config();
 
@@ -92,7 +92,7 @@ app.post('/api/signup', async (req, res) => {
     ) {
       return res.status(400).json({ error: 'Email must be valid and no longer than 254 characters' });
     }
-    if (typeof password !== 'string' || password.length < 6 || password.length > 72) {
+    if (!isValidRegistrationPassword(password)) {
       return res.status(400).json({ error: 'Password must be between 6 and 72 characters' });
     }
 
@@ -129,12 +129,11 @@ app.post('/api/signup', async (req, res) => {
 // User Login
 app.post('/api/login', async (req, res) => {
   try {
-    const { username, password } = req.body;
-    const normalizedUsername = typeof username === 'string' ? username.trim() : username;
-
-    if (!normalizedUsername || !password) {
-      return res.status(400).json({ error: 'Username and password are required' });
+    const credentials = normalizeLoginCredentials(req.body?.username, req.body?.password);
+    if (!credentials) {
+      return res.status(400).json({ error: 'Username and password are required and must be within the allowed limits' });
     }
+    const { username: normalizedUsername, password } = credentials;
 
     const user = await User.findOne({ username: normalizedUsername });
     if (!user) {
