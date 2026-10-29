@@ -21,3 +21,11 @@ Clients should treat `401` as an authentication failure and `403` as an authoriz
 ## Maintenance
 
 When adding a protected route, apply the existing authentication middleware first and keep role checks separate. Never accept a token from a query parameter or request body when the endpoint already follows the Authorization-header contract.
+
+## Login credential boundaries
+
+- Login usernames are trimmed, must contain at least one non-whitespace character, and may not exceed 50 characters.
+- Login passwords must be strings and are capped at 1,024 characters before bcrypt comparison.
+- New registration passwords must contain 6–72 characters and no more than 72 UTF-8 bytes, matching bcrypt's input boundary.
+- Malformed or oversized login credentials receive HTTP 400 instead of reaching the database or bcrypt comparison.
+- Run `cd backend && npm run test:validation` to verify the shared validation boundaries.
