@@ -8,6 +8,7 @@ From the repository root:
 
 ```bash
 node --test frontend/api-base.test.cjs
+cd backend && npm run test:validation
 ```
 
 The frontend API-origin check does not replace backend or browser testing. Install backend dependencies and configure a disposable test database before running any additional integration checks.
