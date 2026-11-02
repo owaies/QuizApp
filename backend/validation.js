@@ -11,6 +11,19 @@ function isValidRegistrationPassword(value) {
     Buffer.byteLength(value, 'utf8') <= 72;
 }
 
+function normalizeQuestionLimit(value) {
+  if (typeof value === 'number') {
+    return Number.isSafeInteger(value) && value >= 0 ? value : null;
+  }
+
+  if (typeof value !== 'string') return null;
+  const normalized = value.trim();
+  if (!/^\\d+$/.test(normalized)) return null;
+
+  const limit = Number(normalized);
+  return Number.isSafeInteger(limit) ? limit : null;
+}
+
 function normalizeLoginCredentials(username, password) {
   if (typeof username !== 'string' || typeof password !== 'string') return null;
   const normalizedUsername = username.trim();
@@ -18,4 +31,4 @@ function normalizeLoginCredentials(username, password) {
   return { username: normalizedUsername, password };
 }
 
-module.exports = { isValidEmail, isValidRegistrationPassword, normalizeLoginCredentials };
+module.exports = { isValidEmail, isValidRegistrationPassword, normalizeLoginCredentials, normalizeQuestionLimit };
