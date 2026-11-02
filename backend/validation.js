@@ -18,7 +18,7 @@ function normalizeQuestionLimit(value) {
 
   if (typeof value !== 'string') return null;
   const normalized = value.trim();
-  if (!/^\\d+$/.test(normalized)) return null;
+  if (!/^\d+$/.test(normalized)) return null;
 
   const limit = Number(normalized);
   return Number.isSafeInteger(limit) ? limit : null;
