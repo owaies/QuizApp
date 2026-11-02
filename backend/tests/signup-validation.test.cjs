@@ -43,3 +43,18 @@ test('registration passwords respect bcrypt UTF-8 byte limits', () => {
   assert.equal(isValidRegistrationPassword('x'.repeat(73)), false);
   assert.equal(isValidRegistrationPassword('12345'), false);
 });
+
+
+const { normalizeQuestionLimit } = require('../validation');
+
+test('accepts non-negative integer quiz question limits', () => {
+  for (const [input, expected] of [[0, 0], [12, 12], ['12', 12], [' 12 ', 12], ['000', 0]]) {
+    assert.equal(normalizeQuestionLimit(input), expected);
+  }
+});
+
+test('rejects malformed and unsafe quiz question limits', () => {
+  for (const input of [-1, 1.5, '1.5', '10items', '0x10', '', '   ', null, undefined, Number.MAX_SAFE_INTEGER + 1, '9007199254740992']) {
+    assert.equal(normalizeQuestionLimit(input), null, String(input));
+  }
+});
