@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const cors = require('cors');
-const { isValidEmail, normalizeLoginCredentials, isValidRegistrationPassword } = require('./validation');
+const { isValidEmail, normalizeLoginCredentials, isValidRegistrationPassword, normalizeQuestionLimit } = require('./validation');
 const bodyParser = require('body-parser');
 require('dotenv').config();
 
@@ -363,8 +363,8 @@ app.put('/api/settings/questionLimit', authenticate, adminCheck, async (req, res
   try {
     const { value } = req.body;
 
-    const limit = parseInt(value);
-    if (isNaN(limit) || limit < 0) {
+    const limit = normalizeQuestionLimit(value);
+    if (limit === null) {
       return res.status(400).json({ error: 'Invalid value' });
     }
 
