@@ -45,7 +45,7 @@ test('registration passwords respect bcrypt UTF-8 byte limits', () => {
 });
 
 
-const { normalizeQuestionLimit } = require('../validation');
+const { normalizeQuestionLimit, resolveQuestionLimitSetting } = require('../validation');
 
 test('accepts non-negative integer quiz question limits', () => {
   for (const [input, expected] of [[0, 0], [12, 12], ['12', 12], [' 12 ', 12], ['000', 0]]) {
@@ -56,5 +56,15 @@ test('accepts non-negative integer quiz question limits', () => {
 test('rejects malformed and unsafe quiz question limits', () => {
   for (const input of [-1, 1.5, '1.5', '10items', '0x10', '', '   ', null, undefined, Number.MAX_SAFE_INTEGER + 1, '9007199254740992']) {
     assert.equal(normalizeQuestionLimit(input), null, String(input));
+  }
+});
+
+
+test('resolves persisted question limit settings without permissive parsing', () => {
+  assert.equal(resolveQuestionLimitSetting(null), 0);
+  assert.equal(resolveQuestionLimitSetting({ value: '15' }), 15);
+  assert.equal(resolveQuestionLimitSetting({ value: '0' }), 0);
+  for (const value of ['15questions', '1.5', '-1', '', null, undefined]) {
+    assert.equal(resolveQuestionLimitSetting({ value }), null, String(value));
   }
 });
