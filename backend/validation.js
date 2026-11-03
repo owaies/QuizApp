@@ -24,6 +24,11 @@ function normalizeQuestionLimit(value) {
   return Number.isSafeInteger(limit) ? limit : null;
 }
 
+function resolveQuestionLimitSetting(setting) {
+  if (setting === null || setting === undefined) return 0;
+  return normalizeQuestionLimit(setting.value);
+}
+
 function normalizeLoginCredentials(username, password) {
   if (typeof username !== 'string' || typeof password !== 'string') return null;
   const normalizedUsername = username.trim();
@@ -31,4 +36,4 @@ function normalizeLoginCredentials(username, password) {
   return { username: normalizedUsername, password };
 }
 
-module.exports = { isValidEmail, isValidRegistrationPassword, normalizeLoginCredentials, normalizeQuestionLimit };
+module.exports = { isValidEmail, isValidRegistrationPassword, normalizeLoginCredentials, normalizeQuestionLimit, resolveQuestionLimitSetting };
