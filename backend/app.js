@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const cors = require('cors');
-const { isValidEmail, normalizeLoginCredentials, isValidRegistrationPassword, normalizeQuestionLimit } = require('./validation');
+const { isValidEmail, normalizeLoginCredentials, isValidRegistrationPassword, normalizeQuestionLimit, resolveQuestionLimitSetting } = require('./validation');
 const bodyParser = require('body-parser');
 require('dotenv').config();
 
@@ -165,7 +165,11 @@ app.get('/api/questions', authenticate, async (req, res) => {
     let questionLimit = 0;
     if (req.user.role !== 'admin') {
       const setting = await Setting.findOne({ name: 'questionLimit' });
-      questionLimit = parseInt(setting?.value) || 0;
+      questionLimit = resolveQuestionLimitSetting(setting);
+      if (questionLimit === null) {
+        console.error('Stored questionLimit setting is invalid');
+        return res.status(500).json({ error: 'Unable to load questions' });
+      }
     }
 
     let questions = await Question.find();
