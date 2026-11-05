@@ -30,10 +30,17 @@ test('normalizes login usernames and rejects malformed or oversized credentials'
     ['student', null],
     ['   ', 'secret'],
     ['u'.repeat(51), 'secret'],
-    ['student', 'x'.repeat(1025)],
+    ['student', 'x'.repeat(73)],
+    ['student', 'é'.repeat(37)],
   ]) {
     assert.equal(normalizeLoginCredentials(username, password), null);
   }
+});
+
+test('login passwords use bcrypt UTF-8 byte boundaries', () => {
+  assert.notEqual(normalizeLoginCredentials('student', 'é'.repeat(36)), null);
+  assert.equal(normalizeLoginCredentials('student', 'é'.repeat(37)), null);
+  assert.equal(normalizeLoginCredentials('student', 'x'.repeat(73)), null);
 });
 
 test('registration passwords respect bcrypt UTF-8 byte limits', () => {
