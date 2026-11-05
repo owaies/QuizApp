@@ -1,4 +1,4 @@
-const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const EMAIL_PATTERN = /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/;
 
 function isValidEmail(value) {
   return typeof value === 'string' && value.length <= 254 && EMAIL_PATTERN.test(value);
@@ -18,7 +18,7 @@ function normalizeQuestionLimit(value) {
 
   if (typeof value !== 'string') return null;
   const normalized = value.trim();
-  if (!/^\d+$/.test(normalized)) return null;
+  if (!/^\\d+$/.test(normalized)) return null;
 
   const limit = Number(normalized);
   return Number.isSafeInteger(limit) ? limit : null;
@@ -32,7 +32,12 @@ function resolveQuestionLimitSetting(setting) {
 function normalizeLoginCredentials(username, password) {
   if (typeof username !== 'string' || typeof password !== 'string') return null;
   const normalizedUsername = username.trim();
-  if (!normalizedUsername || normalizedUsername.length > 50 || !password || password.length > 1024) return null;
+  if (
+    !normalizedUsername ||
+    normalizedUsername.length > 50 ||
+    !password ||
+    Buffer.byteLength(password, 'utf8') > 72
+  ) return null;
   return { username: normalizedUsername, password };
 }
 
