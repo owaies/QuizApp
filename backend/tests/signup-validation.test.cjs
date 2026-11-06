@@ -75,3 +75,25 @@ test('resolves persisted question limit settings without permissive parsing', ()
     assert.equal(resolveQuestionLimitSetting({ value }), null, String(value));
   }
 });
+
+
+const { selectRandomQuestions } = require('../validation');
+
+test('selects a random subset with Fisher-Yates without mutating stored order', () => {
+  const questions = ['a', 'b', 'c', 'd'];
+  const randomValues = [0, 0, 0];
+
+  const selected = selectRandomQuestions(questions, 2, () => randomValues.shift());
+
+  assert.deepEqual(selected, ['b', 'c']);
+  assert.deepEqual(questions, ['a', 'b', 'c', 'd']);
+});
+
+test('leaves question sets unchanged when no sampling is required', () => {
+  const questions = ['a', 'b'];
+  let randomCalls = 0;
+
+  assert.deepEqual(selectRandomQuestions(questions, 2, () => { randomCalls += 1; return 0; }), questions);
+  assert.deepEqual(selectRandomQuestions(questions, 0, () => { randomCalls += 1; return 0; }), questions);
+  assert.equal(randomCalls, 0);
+});

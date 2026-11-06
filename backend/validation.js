@@ -29,6 +29,20 @@ function resolveQuestionLimitSetting(setting) {
   return normalizeQuestionLimit(setting.value);
 }
 
+function selectRandomQuestions(questions, limit, random = Math.random) {
+  if (!Array.isArray(questions)) return [];
+  if (!Number.isSafeInteger(limit) || limit <= 0 || questions.length <= limit) {
+    return questions;
+  }
+
+  const shuffled = questions.slice();
+  for (let index = shuffled.length - 1; index > 0; index -= 1) {
+    const swapIndex = Math.floor(random() * (index + 1));
+    [shuffled[index], shuffled[swapIndex]] = [shuffled[swapIndex], shuffled[index]];
+  }
+  return shuffled.slice(0, limit);
+}
+
 function normalizeLoginCredentials(username, password) {
   if (typeof username !== 'string' || typeof password !== 'string') return null;
   const normalizedUsername = username.trim();
@@ -41,4 +55,4 @@ function normalizeLoginCredentials(username, password) {
   return { username: normalizedUsername, password };
 }
 
-module.exports = { isValidEmail, isValidRegistrationPassword, normalizeLoginCredentials, normalizeQuestionLimit, resolveQuestionLimitSetting };
+module.exports = { isValidEmail, isValidRegistrationPassword, normalizeLoginCredentials, normalizeQuestionLimit, resolveQuestionLimitSetting, selectRandomQuestions };

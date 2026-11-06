@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const cors = require('cors');
-const { isValidEmail, normalizeLoginCredentials, isValidRegistrationPassword, normalizeQuestionLimit, resolveQuestionLimitSetting } = require('./validation');
+const { isValidEmail, normalizeLoginCredentials, isValidRegistrationPassword, normalizeQuestionLimit, resolveQuestionLimitSetting, selectRandomQuestions } = require('./validation');
 const bodyParser = require('body-parser');
 require('dotenv').config();
 
@@ -175,9 +175,7 @@ app.get('/api/questions', authenticate, async (req, res) => {
     let questions = await Question.find();
 
     if (req.user.role !== 'admin' && questionLimit > 0 && questions.length > questionLimit) {
-      questions = questions
-        .sort(() => Math.random() - 0.5)
-        .slice(0, questionLimit);
+      questions = selectRandomQuestions(questions, questionLimit);
     }
 
     // Correct answers must only be included in administrator responses.
