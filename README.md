@@ -50,3 +50,8 @@ Login passwords are validated against bcrypt's 72-byte UTF-8 input limit before 
 ## Security
 
 Environment files containing real credentials must remain untracked. Passwords should be handled through the existing password-hashing flow, and authentication changes should be tested against both successful and rejected requests.
+
+
+## Random question selection
+
+When a positive `questionLimit` is configured for a non-admin quiz session, the API selects a unique random subset with the Fisher-Yates shuffle. The selection is made on a copy, so sampling does not reorder the question collection returned by the database. A missing or zero limit leaves the full question set available.
