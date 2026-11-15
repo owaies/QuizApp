@@ -97,3 +97,25 @@ test('leaves question sets unchanged when no sampling is required', () => {
   assert.deepEqual(selectRandomQuestions(questions, 0, () => { randomCalls += 1; return 0; }), questions);
   assert.equal(randomCalls, 0);
 });
+
+const { isValidObjectId } = require('../validation');
+
+test('accepts canonical 24-character MongoDB ObjectId strings', () => {
+  assert.equal(isValidObjectId('507f1f77bcf86cd799439011'), true);
+  assert.equal(isValidObjectId('ABCDEF0123456789ABCDEF01'), true);
+});
+
+test('rejects malformed MongoDB ObjectId route values', () => {
+  for (const value of [
+    '',
+    '507f1f77bcf86cd79943901',
+    '507f1f77bcf86cd7994390110',
+    'zzzzzzzzzzzzzzzzzzzzzzzz',
+    null,
+    undefined,
+    507f1f77bcf86cd799439011,
+    ['507f1f77bcf86cd799439011'],
+  ]) {
+    assert.equal(isValidObjectId(value), false, String(value));
+  }
+});
