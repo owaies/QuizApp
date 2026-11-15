@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const cors = require('cors');
-const { isValidEmail, normalizeLoginCredentials, isValidRegistrationPassword, normalizeQuestionLimit, resolveQuestionLimitSetting, selectRandomQuestions } = require('./validation');
+const { isValidEmail, isValidObjectId, normalizeLoginCredentials, isValidRegistrationPassword, normalizeQuestionLimit, resolveQuestionLimitSetting, selectRandomQuestions } = require('./validation');
 const bodyParser = require('body-parser');
 require('dotenv').config();
 
@@ -207,7 +207,7 @@ app.post('/api/submit', authenticate, async (req, res) => {
       !answer ||
       typeof answer !== 'object' ||
       typeof answer.id !== 'string' ||
-      !mongoose.Types.ObjectId.isValid(answer.id) ||
+      !isValidObjectId(answer.id) ||
       typeof answer.answer !== 'string'
     )) {
       return res.status(400).json({ error: 'Each answer must include a valid question ID and a text answer' });
@@ -289,6 +289,10 @@ app.get('/api/users', authenticate, adminCheck, async (req, res) => {
 app.delete('/api/users/:id', authenticate, adminCheck, async (req, res) => {
   try {
     const userId = req.params.id;
+    if (!isValidObjectId(userId)) {
+      return res.status(400).json({ error: 'Invalid user ID' });
+    }
+
     const user = await User.findById(userId);
     if (!user) {
       return res.status(404).json({ error: 'User not found' });
@@ -423,12 +427,17 @@ app.post('/api/questions', authenticate, adminCheck, async (req, res) => {
 // Delete Question (Admin only)
 app.delete('/api/questions/:id', authenticate, adminCheck, async (req, res) => {
   try {
-    const question = await Question.findById(req.params.id);
+    const questionId = req.params.id;
+    if (!isValidObjectId(questionId)) {
+      return res.status(400).json({ error: 'Invalid question ID' });
+    }
+
+    const question = await Question.findById(questionId);
     if (!question) {
       return res.status(404).json({ error: 'Question not found' });
     }
 
-    await Question.findByIdAndDelete(req.params.id);
+    await Question.findByIdAndDelete(questionId);
     const questions = await Question.find().sort({ createdAt: -1 });
     res.json(questions);
   } catch (error) {

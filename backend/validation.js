@@ -1,4 +1,9 @@
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const OBJECT_ID_PATTERN = /^[a-f\d]{24}$/i;
+
+function isValidObjectId(value) {
+  return typeof value === 'string' && OBJECT_ID_PATTERN.test(value);
+}
 
 function isValidEmail(value) {
   return typeof value === 'string' && value.length <= 254 && EMAIL_PATTERN.test(value);
@@ -55,4 +60,4 @@ function normalizeLoginCredentials(username, password) {
   return { username: normalizedUsername, password };
 }
 
-module.exports = { isValidEmail, isValidRegistrationPassword, normalizeLoginCredentials, normalizeQuestionLimit, resolveQuestionLimitSetting, selectRandomQuestions };
+module.exports = { isValidEmail, isValidObjectId, isValidRegistrationPassword, normalizeLoginCredentials, normalizeQuestionLimit, resolveQuestionLimitSetting, selectRandomQuestions };
