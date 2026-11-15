@@ -113,7 +113,7 @@ test('rejects malformed MongoDB ObjectId route values', () => {
     'zzzzzzzzzzzzzzzzzzzzzzzz',
     null,
     undefined,
-    507f1f77bcf86cd799439011,
+    42,
     ['507f1f77bcf86cd799439011'],
   ]) {
     assert.equal(isValidObjectId(value), false, String(value));
