@@ -32,6 +32,12 @@ The frontend API-origin check does not replace backend or browser testing. Insta
 - [ ] The displayed score matches the server-calculated score for all-correct, all-incorrect, and partially correct attempts.
 - [ ] A client cannot set its own score, result owner, or privileged submission status.
 
+## Resource identifiers
+
+- [ ] Admin delete-user requests with a malformed MongoDB ObjectId return HTTP 400 without querying the database.
+- [ ] Admin delete-question requests with a malformed MongoDB ObjectId return HTTP 400 without querying the database.
+- [ ] Quiz submissions reject non-canonical question IDs before database lookup; valid 24-character hexadecimal ObjectIds continue to work.
+
 ## API and deployment configuration
 
 - [ ] Same-origin frontend requests work when no API override is configured.
