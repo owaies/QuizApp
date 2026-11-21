@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const cors = require('cors');
-const { isValidEmail, isValidObjectId, normalizeLoginCredentials, isValidRegistrationPassword, normalizeQuestionLimit, resolveQuestionLimitSetting, selectRandomQuestions } = require('./validation');
+const { isDuplicateKeyError, isValidEmail, isValidObjectId, normalizeLoginCredentials, isValidRegistrationPassword, normalizeQuestionLimit, resolveQuestionLimitSetting, selectRandomQuestions } = require('./validation');
 const bodyParser = require('body-parser');
 require('dotenv').config();
 
@@ -121,8 +121,11 @@ app.post('/api/signup', async (req, res) => {
     res.status(201).json({ token, role: user.role, username: user.username });
 
   } catch (error) {
+    if (isDuplicateKeyError(error)) {
+      return res.status(409).json({ error: 'Email or username already exists' });
+    }
     console.error('Signup error:', error);
-    res.status(500).json({ error: 'Unable to create account' });
+    return res.status(500).json({ error: 'Unable to create account' });
   }
 });
 
