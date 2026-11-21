@@ -119,3 +119,15 @@ test('rejects malformed MongoDB ObjectId route values', () => {
     assert.equal(isValidObjectId(value), false, String(value));
   }
 });
+
+
+const { isDuplicateKeyError } = require('../validation');
+
+test('identifies MongoDB duplicate-key errors without masking other failures', () => {
+  assert.equal(isDuplicateKeyError({ code: 11000, keyPattern: { email: 1 } }), true);
+  assert.equal(isDuplicateKeyError({ code: 11000, keyValue: { username: 'student' } }), true);
+  assert.equal(isDuplicateKeyError({ code: 11001 }), false);
+  assert.equal(isDuplicateKeyError({ code: '11000' }), false);
+  assert.equal(isDuplicateKeyError(new Error('database unavailable')), false);
+  assert.equal(isDuplicateKeyError(null), false);
+});
