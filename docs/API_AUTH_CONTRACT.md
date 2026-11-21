@@ -29,3 +29,8 @@ When adding a protected route, apply the existing authentication middleware firs
 - New registration passwords must contain 6–72 characters and no more than 72 UTF-8 bytes, matching bcrypt's input boundary.
 - Malformed or oversized login credentials receive HTTP 400 instead of reaching the database or bcrypt comparison.
 - Run `cd backend && npm run test:validation` to verify the shared validation boundaries.
+
+
+## Duplicate registration conflicts
+
+The signup endpoint returns HTTP 409 when MongoDB's unique username or email index rejects a concurrent duplicate registration. The pre-insert lookup remains a fast user-friendly check, while the unique index is the final concurrency-safe authority. Clients should show the conflict message without treating it as a server outage.
