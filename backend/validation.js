@@ -9,6 +9,10 @@ function isValidEmail(value) {
   return typeof value === 'string' && value.length <= 254 && EMAIL_PATTERN.test(value);
 }
 
+function isDuplicateKeyError(error) {
+  return Boolean(error && typeof error === 'object' && error.code === 11000);
+}
+
 function isValidRegistrationPassword(value) {
   return typeof value === 'string' &&
     value.length >= 6 &&
@@ -60,4 +64,4 @@ function normalizeLoginCredentials(username, password) {
   return { username: normalizedUsername, password };
 }
 
-module.exports = { isValidEmail, isValidObjectId, isValidRegistrationPassword, normalizeLoginCredentials, normalizeQuestionLimit, resolveQuestionLimitSetting, selectRandomQuestions };
+module.exports = { isDuplicateKeyError, isValidEmail, isValidObjectId, isValidRegistrationPassword, normalizeLoginCredentials, normalizeQuestionLimit, resolveQuestionLimitSetting, selectRandomQuestions };
