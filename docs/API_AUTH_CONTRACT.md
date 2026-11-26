@@ -25,8 +25,9 @@ When adding a protected route, apply the existing authentication middleware firs
 ## Login credential boundaries
 
 - Login usernames are trimmed, must contain at least one non-whitespace character, and may not exceed 50 characters.
-- Login passwords must be strings and are capped at 1,024 characters before bcrypt comparison.
+- Login passwords must be strings and are capped at 72 UTF-8 bytes before bcrypt comparison.
 - New registration passwords must contain 6–72 characters and no more than 72 UTF-8 bytes, matching bcrypt's input boundary.
+- Signup email addresses are limited to 254 UTF-8 bytes; the limit is measured in encoded bytes rather than JavaScript characters.
 - Malformed or oversized login credentials receive HTTP 400 instead of reaching the database or bcrypt comparison.
 - Run `cd backend && npm run test:validation` to verify the shared validation boundaries.
 
