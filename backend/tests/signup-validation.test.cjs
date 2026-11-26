@@ -6,6 +6,22 @@ test('accepts a conventional email address', () => {
   assert.equal(isValidEmail('student@example.com'), true);
 });
 
+test('enforces the 254-byte email boundary for multibyte addresses', () => {
+  const domain = [
+    'é'.repeat(31),
+    'é'.repeat(31),
+    'é'.repeat(31),
+    'é'.repeat(29) + 'a',
+  ].join('.') + '.com';
+  const acceptedEmail = 'a@' + domain;
+  const rejectedEmail = 'a@' + domain.slice(0, -4) + 'b.com';
+
+  assert.equal(Buffer.byteLength(acceptedEmail, 'utf8'), 254);
+  assert.equal(Buffer.byteLength(rejectedEmail, 'utf8'), 255);
+  assert.equal(isValidEmail(acceptedEmail), true);
+  assert.equal(isValidEmail(rejectedEmail), false);
+});
+
 test('rejects missing separators and whitespace', () => {
   for (const value of ['student.example.com', 'student@localhost', 'student @example.com', 'student@example .com']) {
     assert.equal(isValidEmail(value), false, value);
