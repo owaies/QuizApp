@@ -6,7 +6,7 @@ function isValidObjectId(value) {
 }
 
 function isValidEmail(value) {
-  return typeof value === 'string' && value.length <= 254 && EMAIL_PATTERN.test(value);
+  return typeof value === 'string' && Buffer.byteLength(value, 'utf8') <= 254 && EMAIL_PATTERN.test(value);
 }
 
 function isDuplicateKeyError(error) {
