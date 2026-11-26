@@ -90,7 +90,7 @@ app.post('/api/signup', async (req, res) => {
       typeof normalizedEmail !== 'string' ||
       !isValidEmail(normalizedEmail)
     ) {
-      return res.status(400).json({ error: 'Email must be valid and no longer than 254 characters' });
+      return res.status(400).json({ error: 'Email must be valid and no longer than 254 UTF-8 bytes' });
     }
     if (!isValidRegistrationPassword(password)) {
       return res.status(400).json({ error: 'Password must be between 6 and 72 characters' });
